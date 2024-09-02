@@ -1,0 +1,3 @@
+[aquila/server]2024/09/02 - 15:02:58.014	[31merror[0m	/Users/yusenlin/Avalon/saber/golang/aquila/initialize/gorm_mysql.go:24	MySQL启动异常	{"err": "dial tcp 127.0.0.1:3306: connect: connection refused"}
+[aquila/server]2024/09/02 - 15:03:57.899	[31merror[0m	/Users/yusenlin/Avalon/saber/golang/aquila/initialize/gorm_mysql.go:24	MySQL启动异常	{"err": "dial tcp 127.0.0.1:3306: connect: connection refused"}
+[aquila/server]2024/09/02 - 16:36:36.605	[31merror[0m	/Users/yusenlin/Avalon/saber/golang/aquila/initialize/redis.go:21	redis connect ping failed, err:	{"error": "dial tcp 127.0.0.1:6379: connect: connection refused"}

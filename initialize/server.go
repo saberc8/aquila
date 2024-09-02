@@ -5,6 +5,7 @@ import (
 	"aquila/middleware"
 	"aquila/router"
 	"fmt"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -13,9 +14,11 @@ type server interface {
 }
 
 func InitServer() {
+	// 初始化redis
+	Redis()
 	// 初始化路由
 	routers := Routers()
-	address := fmt.Sprintf(":%d", global.AQUILA_CONFIG.App.Port)
+	address := fmt.Sprintf(":%d", global.AquilaConfig.App.Port)
 	// 启动服务
 	if err := routers.Run(address); err != nil {
 		panic(err)

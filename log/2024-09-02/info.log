@@ -1,0 +1,26 @@
+[aquila/server]2024/09/02 - 11:09:12.427	[34minfo[0m	/Users/yusenlin/Avalon/saber/golang/aquila/main.go:20	server run success on 	{"zap_log": "zap_log"}
+[aquila/server]2024/09/02 - 11:43:17.022	[34minfo[0m	/Users/yusenlin/Avalon/saber/golang/aquila/main.go:20	server run success on 	{"zap_log": "zap_log"}
+[aquila/server]2024/09/02 - 15:02:58.013	[34minfo[0m	/Users/yusenlin/Avalon/saber/golang/aquila/main.go:20	server run success on 	{"zap_log": "zap_log"}
+[aquila/server]2024/09/02 - 15:03:57.899	[34minfo[0m	/Users/yusenlin/Avalon/saber/golang/aquila/main.go:20	server run success on 	{"zap_log": "zap_log"}
+[aquila/server]2024/09/02 - 15:05:00.711	[34minfo[0m	/Users/yusenlin/Avalon/saber/golang/aquila/main.go:20	server run success on 	{"zap_log": "zap_log"}
+[aquila/server]2024/09/02 - 15:05:41.315	[34minfo[0m	/Users/yusenlin/Avalon/saber/golang/aquila/main.go:20	server run success on 	{"zap_log": "zap_log"}
+[aquila/server]2024/09/02 - 15:05:41.321	[34minfo[0m	/Users/yusenlin/Avalon/saber/golang/aquila/initialize/gorm_mysql.go:32	MySQL启动成功	{"host": "127.0.0.1", "port": "3306", "dbname": "avalon"}
+[aquila/server]2024/09/02 - 15:53:13.217	[34minfo[0m	/Users/yusenlin/Avalon/saber/golang/aquila/main.go:20	server run success on 	{"zap_log": "zap_log"}
+[aquila/server]2024/09/02 - 15:54:21.660	[34minfo[0m	/Users/yusenlin/Avalon/saber/golang/aquila/main.go:20	server run success on 	{"zap_log": "zap_log"}
+[aquila/server]2024/09/02 - 15:54:42.347	[34minfo[0m	/Users/yusenlin/Avalon/saber/golang/aquila/main.go:20	server run success on 	{"zap_log": "zap_log"}
+[aquila/server]2024/09/02 - 15:55:57.861	[34minfo[0m	/Users/yusenlin/Avalon/saber/golang/aquila/main.go:20	server run success on 	{"zap_log": "zap_log"}
+[aquila/server]2024/09/02 - 15:56:24.104	[34minfo[0m	/Users/yusenlin/Avalon/saber/golang/aquila/main.go:20	server run success on 	{"zap_log": "zap_log"}
+[aquila/server]2024/09/02 - 15:56:47.380	[34minfo[0m	/Users/yusenlin/Avalon/saber/golang/aquila/main.go:20	server run success on 	{"zap_log": "zap_log"}
+[aquila/server]2024/09/02 - 15:58:04.414	[34minfo[0m	/Users/yusenlin/Avalon/saber/golang/aquila/main.go:20	server run success on 	{"zap_log": "zap_log"}
+[aquila/server]2024/09/02 - 15:58:44.899	[34minfo[0m	/Users/yusenlin/Avalon/saber/golang/aquila/main.go:20	server run success on 	{"zap_log": "zap_log"}
+[aquila/server]2024/09/02 - 15:58:44.950	[34minfo[0m	/Users/yusenlin/Avalon/saber/golang/aquila/initialize/gorm_pgsql.go:38	PostgreSQL启动成功	{"host": "127.0.0.1", "port": "5432", "dbname": "qundd_v1"}
+[aquila/server]2024/09/02 - 16:35:46.508	[34minfo[0m	/Users/yusenlin/Avalon/saber/golang/aquila/main.go:20	server run success on 	{"zap_log": "zap_log"}
+[aquila/server]2024/09/02 - 16:35:46.555	[34minfo[0m	/Users/yusenlin/Avalon/saber/golang/aquila/initialize/gorm_pgsql.go:37	PostgreSQL启动成功	{"host": "127.0.0.1", "port": "5432", "dbname": "qundd_v1"}
+[aquila/server]2024/09/02 - 16:36:12.058	[34minfo[0m	/Users/yusenlin/Avalon/saber/golang/aquila/main.go:20	server run success on 	{"zap_log": "zap_log"}
+[aquila/server]2024/09/02 - 16:36:12.098	[34minfo[0m	/Users/yusenlin/Avalon/saber/golang/aquila/initialize/gorm_pgsql.go:37	PostgreSQL启动成功	{"host": "127.0.0.1", "port": "5432", "dbname": "qundd_v1"}
+[aquila/server]2024/09/02 - 16:36:12.103	[34minfo[0m	/Users/yusenlin/Avalon/saber/golang/aquila/initialize/redis.go:24	redis connect ping response:	{"pong": "PONG"}
+[aquila/server]2024/09/02 - 16:36:36.494	[34minfo[0m	/Users/yusenlin/Avalon/saber/golang/aquila/main.go:20	server run success on 	{"zap_log": "zap_log"}
+[aquila/server]2024/09/02 - 16:36:36.537	[34minfo[0m	/Users/yusenlin/Avalon/saber/golang/aquila/initialize/gorm_pgsql.go:37	PostgreSQL启动成功	{"host": "127.0.0.1", "port": "5432", "dbname": "qundd_v1"}
+[aquila/server]2024/09/02 - 16:36:48.981	[34minfo[0m	/Users/yusenlin/Avalon/saber/golang/aquila/main.go:20	server run success on 	{"zap_log": "zap_log"}
+[aquila/server]2024/09/02 - 16:36:49.020	[34minfo[0m	/Users/yusenlin/Avalon/saber/golang/aquila/initialize/gorm_pgsql.go:37	PostgreSQL启动成功	{"host": "127.0.0.1", "port": "5432", "dbname": "qundd_v1"}
+[aquila/server]2024/09/02 - 16:36:49.022	[34minfo[0m	/Users/yusenlin/Avalon/saber/golang/aquila/initialize/redis.go:24	redis connect ping response:	{"pong": "PONG"}

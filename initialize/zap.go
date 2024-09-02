@@ -3,11 +3,12 @@ package initialize
 import (
 	"aquila/global"
 	"aquila/utils"
+	"path"
+	"time"
+
 	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-	"path"
-	"time"
 
 	"fmt"
 	"os"
@@ -19,15 +20,15 @@ type _zap struct{}
 
 // InitZap 初始化zap日志库
 func InitZap() (logger *zap.Logger) {
-	if ok, _ := utils.PathExists(global.AQUILA_CONFIG.Zap.Director); !ok { // 判断是否有Director文件夹
-		fmt.Printf("create %v directory\n", global.AQUILA_CONFIG.Zap.Director)
-		_ = os.Mkdir(global.AQUILA_CONFIG.Zap.Director, os.ModePerm)
+	if ok, _ := utils.PathExists(global.AquilaConfig.Zap.Director); !ok { // 判断是否有Director文件夹
+		fmt.Printf("create %v directory\n", global.AquilaConfig.Zap.Director)
+		_ = os.Mkdir(global.AquilaConfig.Zap.Director, os.ModePerm)
 	}
 
 	cores := Zap.GetZapCores()
 	logger = zap.New(zapcore.NewTee(cores...))
 
-	if global.AQUILA_CONFIG.Zap.ShowLine {
+	if global.AquilaConfig.Zap.ShowLine {
 		logger = logger.WithOptions(zap.AddCaller())
 	}
 
@@ -37,7 +38,7 @@ func InitZap() (logger *zap.Logger) {
 }
 
 func (z *_zap) GetEncoder() zapcore.Encoder {
-	if global.AQUILA_CONFIG.Zap.Format == "json" {
+	if global.AquilaConfig.Zap.Format == "json" {
 		return zapcore.NewJSONEncoder(z.GetEncoderConfig())
 	}
 	return zapcore.NewConsoleEncoder(z.GetEncoderConfig())
@@ -50,9 +51,9 @@ func (z *_zap) GetEncoderConfig() zapcore.EncoderConfig {
 		TimeKey:        "time",
 		NameKey:        "logger",
 		CallerKey:      "caller",
-		StacktraceKey:  global.AQUILA_CONFIG.Zap.StacktraceKey,
+		StacktraceKey:  global.AquilaConfig.Zap.StacktraceKey,
 		LineEnding:     zapcore.DefaultLineEnding,
-		EncodeLevel:    global.AQUILA_CONFIG.Zap.ZapEncodeLevel(),
+		EncodeLevel:    global.AquilaConfig.Zap.ZapEncodeLevel(),
 		EncodeTime:     z.CustomTimeEncoder,
 		EncodeDuration: zapcore.SecondsDurationEncoder,
 		EncodeCaller:   zapcore.FullCallerEncoder,
@@ -71,13 +72,13 @@ func (z *_zap) GetEncoderCore(l zapcore.Level, level zap.LevelEnablerFunc) zapco
 
 // CustomTimeEncoder 自定义日志输出时间格式
 func (z *_zap) CustomTimeEncoder(t time.Time, encoder zapcore.PrimitiveArrayEncoder) {
-	encoder.AppendString(global.AQUILA_CONFIG.Zap.Prefix + t.Format("2006/01/02 - 15:04:05.000"))
+	encoder.AppendString(global.AquilaConfig.Zap.Prefix + t.Format("2006/01/02 - 15:04:05.000"))
 }
 
 // GetZapCores 根据配置文件的Level获取 []zapcore.Core
 func (z *_zap) GetZapCores() []zapcore.Core {
 	cores := make([]zapcore.Core, 0, 7)
-	for level := global.AQUILA_CONFIG.Zap.TransportLevel(); level <= zapcore.FatalLevel; level++ {
+	for level := global.AquilaConfig.Zap.TransportLevel(); level <= zapcore.FatalLevel; level++ {
 		cores = append(cores, z.GetEncoderCore(level, z.GetLevelPriority(level)))
 	}
 	return cores
@@ -128,12 +129,12 @@ type fileRotateLogs struct{}
 // GetWriteSyncer 获取 zapcore.WriteSyncer
 func (r *fileRotateLogs) GetWriteSyncer(level string) (zapcore.WriteSyncer, error) {
 	fileWriter, err := rotatelogs.New(
-		path.Join(global.AQUILA_CONFIG.Zap.Director, "%Y-%m-%d", level+".log"),
+		path.Join(global.AquilaConfig.Zap.Director, "%Y-%m-%d", level+".log"),
 		rotatelogs.WithClock(rotatelogs.Local),
-		rotatelogs.WithMaxAge(time.Duration(global.AQUILA_CONFIG.Zap.MaxAge)*24*time.Hour), // 日志留存时间
+		rotatelogs.WithMaxAge(time.Duration(global.AquilaConfig.Zap.MaxAge)*24*time.Hour), // 日志留存时间
 		rotatelogs.WithRotationTime(time.Hour*24),
 	)
-	if global.AQUILA_CONFIG.Zap.LogInConsole {
+	if global.AquilaConfig.Zap.LogInConsole {
 		return zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stdout), zapcore.AddSync(fileWriter)), err
 	}
 	return zapcore.AddSync(fileWriter), err

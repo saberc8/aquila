@@ -28,16 +28,17 @@ mysql: # MySQL 配置
 
 pgsql:
   prefix: ""
+  host: 127.0.0.1 # 服务器地址
   port: "5432"
   config: sslmode=disable TimeZone=Asia/Shanghai
-  db-name: gva_v4
+  db_name: qundd_v1
   username: postgres
   password: pg123456
   path: 127.0.0.1
   engine: ""
-  log-mode: error
-  max-idle-conns: 10
-  max-open-conns: 100
+  log_mode: error
+  max_idle_conns: 10
+  max_open_conns: 100
   singular: false
   log-zap: false
 qiniu:
@@ -53,10 +54,6 @@ redis:
   password: ""
   db: 0
   useCluster: false
-  clusterAddrs:
-    - 172.21.0.3:7000
-    - 172.21.0.4:7001
-    - 172.21.0.2:7002
 system:
   db-type: mysql
   oss-type: local

@@ -1,6 +1,6 @@
 package config
 
-type MySQL struct {
+type PGSQL struct {
 	Host         string `mapstructure:"host" json:"host" yaml:"host"`                               // 服务器地址:端口
 	Port         string `mapstructure:"port" json:"port" yaml:"port"`                               //:端口
 	Config       string `mapstructure:"config" json:"config" yaml:"config"`                         // 高级配置
@@ -16,10 +16,14 @@ type MySQL struct {
 	LogZap       bool   `mapstructure:"log_zap" json:"log_zap" yaml:"log_zap"`                      // 是否通过zap写入日志文件
 }
 
-func (m *MySQL) DSN() string {
-	return m.Username + ":" + m.Password + "@tcp(" + m.Host + ":" + m.Port + ")/" + m.Dbname + "?" + m.Config
+func (p *PGSQL) DSN() string {
+	return "host=" + p.Host + " user=" + p.Username + " password=" + p.Password + " dbname=" + p.Dbname + " port=" + p.Port + " " + p.Config
 }
 
-func (m *MySQL) GetLogMode() string {
+func (p *PGSQL) LinkDSN(dbname string) string {
+	return "host=" + p.Host + " user=" + p.Username + " password=" + p.Password + " dbname=" + dbname + " port=" + p.Port + " " + p.Config
+}
+
+func (m *PGSQL) GetLogMode() string {
 	return m.LogMode
 }

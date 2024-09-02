@@ -64,11 +64,11 @@ func InitViper(path ...string) *viper.Viper {
 	vip.WatchConfig()
 	vip.OnConfigChange(func(e fsnotify.Event) {
 		fmt.Println("config file changed:", e.Name)
-		if err = vip.Unmarshal(&global.AQUILA_CONFIG); err != nil {
+		if err = vip.Unmarshal(&global.AquilaConfig); err != nil {
 			fmt.Println(err)
 		}
 	})
-	if err = vip.Unmarshal(&global.AQUILA_CONFIG); err != nil {
+	if err = vip.Unmarshal(&global.AquilaConfig); err != nil {
 		fmt.Println(err)
 	}
 	fmt.Println("====1-viper====: viper init config success")
