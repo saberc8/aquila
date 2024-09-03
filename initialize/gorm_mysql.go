@@ -2,8 +2,10 @@ package initialize
 
 import (
 	"aquila/global"
+	"aquila/model"
 	"fmt"
 	"go.uber.org/zap"
+	"log"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -33,6 +35,14 @@ func GormMysql() *gorm.DB {
 		global.AquilaLog.Info("MySQL启动成功", zap.String("host", m.Host), zap.String("port", m.Port), zap.String("dbname", m.Dbname))
 		sqlDB.SetMaxIdleConns(m.MaxIdleConns)
 		sqlDB.SetMaxOpenConns(m.MaxOpenConns)
+
+		// 创建表
+		err := db.AutoMigrate(
+			&model.UserEntity{},
+		)
+		if err != nil {
+			log.Fatalf("failed to auto migrate models: %v", err)
+		}
 		return db
 	}
 

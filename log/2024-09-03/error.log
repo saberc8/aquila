@@ -1,0 +1,1 @@
+[aquila/server]2024/09/03 - 20:16:52.971	[31merror[0m	/Users/yusenlin/Avalon/saber/golang/aquila/initialize/gorm_mysql.go:27	MySQL启动异常	{"err": "Error 1049 (42000): Unknown database 'aquila'"}

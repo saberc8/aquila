@@ -2,8 +2,10 @@ package initialize
 
 import (
 	"aquila/global"
+	"aquila/model"
 	"fmt"
 	"go.uber.org/zap"
+	"log"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -35,6 +37,14 @@ func GormPgSql() *gorm.DB {
 		fmt.Println("====3-gorm====: gorm link PostgreSQL success")
 		// 打印数据库连接信息
 		global.AquilaLog.Info("PostgreSQL启动成功", zap.String("host", p.Host), zap.String("port", p.Port), zap.String("dbname", p.Dbname))
+
+		// 创建表 CreateInitTable
+		err := db.AutoMigrate(
+			&model.UserEntity{},
+		)
+		if err != nil {
+			log.Fatalf("failed to auto migrate models: %v", err)
+		}
 		return db
 	}
 }

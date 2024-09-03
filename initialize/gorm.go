@@ -75,3 +75,7 @@ func InitGorm() *gorm.DB {
 		return GormMysql()
 	}
 }
+
+func RegisterTables() {
+
+}

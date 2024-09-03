@@ -41,5 +41,6 @@ func Routers() *gin.Engine {
 	// 注册路由
 	router.InitLoginRouter(ApiGroup)  // 用户登录
 	router.InitCommonRouter(ApiGroup) // 公共路由
+	router.InitUserRouter(ApiGroup)   // 用户路由
 	return Router
 }

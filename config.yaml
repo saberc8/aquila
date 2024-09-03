@@ -15,7 +15,7 @@ mysql: # MySQL 配置
   host: 127.0.0.1 # 服务器地址
   port: "3306" # 端口
   config: charset=utf8mb4&parseTime=True&loc=Local # 其他配置
-  db_name: avalon # 数据库名称
+  db_name: aquila # 数据库名称
   username: root # 数据库用户名
   password: "123456" # 数据库密码
   prefix: "t_" # 全局表前缀，单独定义 TableName 则不生效
@@ -31,7 +31,7 @@ pgsql:
   host: 127.0.0.1 # 服务器地址
   port: "5432"
   config: sslmode=disable TimeZone=Asia/Shanghai
-  db_name: qundd_v1
+  db_name: aquila
   username: postgres
   password: pg123456
   path: 127.0.0.1
