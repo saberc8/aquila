@@ -10,4 +10,5 @@ func InitUserRouter(Router *gin.RouterGroup) {
 	resisterRouter := Router.Group("user", middleware.AuthMiddleWare())
 	user := system.User{}
 	resisterRouter.POST("", user.CreateUserApi)
+	resisterRouter.GET("", user.GetUserApi)
 }

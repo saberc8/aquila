@@ -5,7 +5,8 @@ import (
 	"aquila/middleware"
 	"aquila/router"
 	"fmt"
-
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 )
 
@@ -28,13 +29,13 @@ func InitServer() {
 // Routers 配置全局的路由
 func Routers() *gin.Engine {
 	Router := gin.Default()
+	// sessions
+	Router.Use(sessions.Sessions("mysession", cookie.NewStore([]byte("captcha"))))
 	// 注册中间件
 	Router.Use(
 		middleware.CorsMiddleWare(),
 		middleware.LoggerMiddleWare(),
 		middleware.RecoverMiddleWare(),
-		//限流中间件 1秒中放100个令牌
-		//middleware.RateLimitMiddleware(time.Second*1, 1000),
 	)
 	// 配置全局路径
 	ApiGroup := Router.Group("/api")
@@ -42,5 +43,7 @@ func Routers() *gin.Engine {
 	router.InitLoginRouter(ApiGroup)  // 用户登录
 	router.InitCommonRouter(ApiGroup) // 公共路由
 	router.InitUserRouter(ApiGroup)   // 用户路由
+	router.InitRoleRouter(ApiGroup)   // 角色路由
+	router.InitMenuRouter(ApiGroup)   // 菜单路由
 	return Router
 }

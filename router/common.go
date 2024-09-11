@@ -1,17 +1,15 @@
 package router
 
 import (
+	"aquila/api/common"
 	"github.com/gin-gonic/gin"
 )
 
 func InitCommonRouter(Router *gin.RouterGroup) {
 	resisterRouter := Router.Group("common")
-	{
-		resisterRouter.GET("captcha", func(ctx *gin.Context) {
-			ctx.JSON(200, gin.H{
-				"message": "captcha",
-			})
-		}) // 获取验证码
-
-	}
+	auth := common.Auth{}
+	resisterRouter.GET("/captcha", auth.Captcha)
+	resisterRouter.POST("/login", auth.Login)
+	resisterRouter.POST("/logout", auth.Logout)
+	resisterRouter.POST("/register", auth.Register)
 }

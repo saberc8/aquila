@@ -22,4 +22,5 @@ func main() {
 	// 初始化数据库
 	global.AquilaDb = initialize.InitGorm()
 	initialize.InitServer()
+	// 初始化menu
 }

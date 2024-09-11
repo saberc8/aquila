@@ -38,9 +38,13 @@ func GormPgSql() *gorm.DB {
 		// 打印数据库连接信息
 		global.AquilaLog.Info("PostgreSQL启动成功", zap.String("host", p.Host), zap.String("port", p.Port), zap.String("dbname", p.Dbname))
 
-		// 创建表 CreateInitTable
+		// 创建表
 		err := db.AutoMigrate(
 			&model.UserEntity{},
+			&model.RoleEntity{},
+			&model.MenuEntity{},
+			&model.RoleMenuEntity{},
+			&model.UserRoleEntity{},
 		)
 		if err != nil {
 			log.Fatalf("failed to auto migrate models: %v", err)
