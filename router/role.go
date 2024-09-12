@@ -11,6 +11,7 @@ func InitRoleRouter(Router *gin.RouterGroup) {
 	role := system.Role{}
 	resisterRouter.POST("", role.CreateRoleApi)
 	resisterRouter.GET("", role.GetRoleApi)
-	resisterRouter.GET("page", role.GetRolePageApi)
+	resisterRouter.GET("list", role.GetRolePageApi)
+	resisterRouter.POST("update", role.UpdateRoleApi)
 	resisterRouter.POST("bindMenu", role.BindMenuApi)
 }

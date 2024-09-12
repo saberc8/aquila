@@ -6,6 +6,26 @@ type UserDto struct {
 	Id       int    `form:"id" json:"id"`
 	Username string `form:"username" json:"username"` // 账号
 	Password string `form:"password" json:"password"` // 密码
+	Nickname string `form:"nickname" json:"nickname"` // 昵称
+}
+
+type UserPageVo struct {
+	Total int64              `form:"total" json:"total"`
+	Data  []model.UserEntity `form:"data" json:"data"`
+}
+
+type UserRoleDto struct {
+	UserId  int64  `form:"userId" json:"userId"`
+	RoleIds string `form:"roleIds" json:"roleIds"`
+}
+
+type GetUserMenuDto struct {
+	UserId int64 `form:"userId" json:"userId"`
+}
+
+type UserMenuTreeDto struct {
+	MenuDto
+	Children []UserMenuTreeDto `json:"children"`
 }
 
 type RoleDto struct {
@@ -16,8 +36,8 @@ type RoleDto struct {
 }
 
 type RolePageDto struct {
-	Total int64 `form:"total" json:"total"`
-	Data  []model.RoleEntity
+	Total int64              `form:"total" json:"total"`
+	Data  []model.RoleEntity `form:"data" json:"data"`
 }
 
 type MenuDto struct {
@@ -39,11 +59,17 @@ type MenuDto struct {
 }
 
 type MenuPageDto struct {
-	Total int64 `form:"total" json:"total"`
-	Data  []model.MenuEntity
+	Total int64       `form:"total" json:"total"`
+	Data  interface{} `form:"data" json:"data"`
 }
 
 type RoleMenuDto struct {
 	RoleId  int64  `form:"roleId" json:"roleId"`
 	MenuIds string `form:"menuIds" json:"menuIds"`
+}
+
+type ChangePasswordDto struct {
+	UserId      int64  `form:"userId" json:"userId"`
+	OldPassword string `form:"oldPassword" json:"oldPassword"`
+	NewPassword string `form:"newPassword" json:"newPassword"`
 }

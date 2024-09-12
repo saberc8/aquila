@@ -74,8 +74,6 @@ func (a Auth) Login(ctx *gin.Context) {
 
 func (a Auth) Register(ctx *gin.Context) {
 	var req RegisterDto
-	// q: x-www-form-urlencoded的请求方式 传的{username: 'admin'}, 如何赋值到req中
-	// a: 使用ShouldBind方法
 	err := ctx.ShouldBind(&req)
 	fmt.Println(err)
 	if err != nil {

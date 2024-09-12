@@ -6,7 +6,6 @@ import (
 	"aquila/utils"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"strconv"
 )
 
 type Menu struct{}
@@ -71,30 +70,24 @@ func (m *Menu) GetMenuApi(ctx *gin.Context) {
 	utils.Success(ctx, menu)
 }
 
-func (m *Menu) GetMenuPageApi(ctx *gin.Context) {
+func (m *Menu) GetMenuAllApi(ctx *gin.Context) {
 	var req MenuPageDto
 	if err := ctx.ShouldBind(&req); err != nil {
 		utils.Fail(ctx, "---step1---"+err.Error())
 		return
 	}
-	pageNum := ctx.DefaultQuery("pageNum", "1")
-	pageSize := ctx.DefaultQuery("pageSize", "10")
-	pageNumInt, _ := strconv.Atoi(pageNum)
-	pageSizeInt, _ := strconv.Atoi(pageSize)
 	var menus []model.MenuEntity
-	var total int64
-	err := global.AquilaDb.Model(&model.MenuEntity{}).Count(&total).Error
+	// 获取所有的menu
+	err := global.AquilaDb.Find(&menus).Error
 	if err != nil {
 		utils.Fail(ctx, "查询失败")
 		return
+	}
+	// menus 根据id和parentId，组装成树形结构，children: []MenuEntity
+	var menuTree []UserMenuTreeDto
+	menuTree = getMenuTree(0, menus)
 
-	}
-	err = global.AquilaDb.Scopes(utils.Paginate(pageNumInt, pageSizeInt)).Find(&menus).Error
-	if err != nil {
-		utils.Fail(ctx, "查询失败")
-		return
-	}
-	req.Total = total
-	req.Data = menus
+	req.Data = menuTree
+	req.Total = int64(len(menuTree))
 	utils.Success(ctx, req)
 }

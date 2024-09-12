@@ -45,6 +45,30 @@ func (r Role) GetRoleApi(ctx *gin.Context) {
 	}
 }
 
+// updateRoleApi 更新角色
+func (r Role) UpdateRoleApi(ctx *gin.Context) {
+	var req RoleDto
+	if err := ctx.ShouldBind(&req); err != nil {
+		utils.Fail(ctx, "---step1---"+err.Error())
+		return
+	}
+	var role model.RoleEntity
+	err := global.AquilaDb.Where("id = ?", req.Id).First(&role).Error
+	if err != nil {
+		utils.Fail(ctx, "角色不存在")
+		return
+	}
+	role.Name = req.Name
+	role.Remark = req.Remark
+	role.Status = req.Status
+	err = global.AquilaDb.Save(&role).Error
+	if err != nil {
+		utils.Fail(ctx, "角色更新失败")
+		return
+	}
+	utils.Success(ctx, nil)
+}
+
 func (r Role) GetRolePageApi(ctx *gin.Context) {
 	var req RolePageDto
 	if err := ctx.ShouldBind(&req); err != nil {
@@ -95,13 +119,16 @@ func (r Role) BindMenuApi(ctx *gin.Context) {
 		}
 		for _, v := range utils.StrSplit(menus) {
 			menuId, _ := strconv.Atoi(strconv.Itoa(v))
-			roleMenu = model.RoleMenuEntity{
-				RoleId: req.RoleId,
-				MenuId: int64(menuId),
+			var menu model.MenuEntity
+			err = tx.Where("id = ?", menuId).First(&menu).Error
+			if err == nil {
+				roleMenu = model.RoleMenuEntity{
+					RoleId: req.RoleId,
+					MenuId: int64(menuId),
+				}
+				roleMenus = append(roleMenus, roleMenu)
 			}
-			roleMenus = append(roleMenus, roleMenu)
 		}
-		fmt.Println(roleMenus)
 		err = tx.Create(&roleMenus).Error
 		if err != nil {
 			return err

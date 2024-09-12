@@ -11,5 +11,5 @@ func InitMenuRouter(Router *gin.RouterGroup) {
 	menu := system.Menu{}
 	resisterRouter.POST("", menu.CreateMenuApi)
 	resisterRouter.GET("", menu.GetMenuApi)
-	resisterRouter.GET("page", menu.GetMenuPageApi)
+	resisterRouter.GET("list", menu.GetMenuAllApi)
 }
