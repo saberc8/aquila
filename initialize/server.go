@@ -5,8 +5,6 @@ import (
 	"aquila/middleware"
 	"aquila/router"
 	"fmt"
-	"github.com/gin-contrib/sessions"
-	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 )
 
@@ -29,8 +27,6 @@ func InitServer() {
 // Routers 配置全局的路由
 func Routers() *gin.Engine {
 	Router := gin.Default()
-	// sessions
-	Router.Use(sessions.Sessions("mysession", cookie.NewStore([]byte("captcha"))))
 	// 注册中间件
 	Router.Use(
 		middleware.CorsMiddleWare(),

@@ -4,13 +4,14 @@ import (
 	"aquila/global"
 	"aquila/model"
 	"aquila/utils"
+	"context"
 	"crypto/md5"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"net/http"
-
-	"github.com/gin-contrib/sessions"
+	"time"
 )
 
 type Auth struct{}
@@ -18,17 +19,19 @@ type Auth struct{}
 // Captcha 获取验证码
 func (a Auth) Captcha(ctx *gin.Context) {
 	svg, code := utils.GenerateSVG(80, 40)
-	session := sessions.Default(ctx)
-	session.Set("captcha", code)
-	fmt.Println("captcha:", code)
-	err := session.Save()
+	// Generate a unique key for the captcha
+	captchaKey := uuid.New().String()
+	// Store the captcha in Redis with the unique key
+	err := global.AquilaRedis.Set(context.Background(), "captcha-"+captchaKey, code, 5*time.Minute).Err()
 	if err != nil {
-		fmt.Println("Session save error:", err)
+		fmt.Println("Redis set error:", err)
 		return
 	}
-	// 设置 Content-Type 为 "image/svg+xml"
-	ctx.Header("Content-Type", "image/svg+xml; charset=utf-8")
-	ctx.Data(http.StatusOK, "image/svg+xml", svg)
+	// Return the captcha key to the client
+	ctx.JSON(http.StatusOK, gin.H{
+		"captchaKey": captchaKey,
+		"captchaSvg": string(svg),
+	})
 }
 
 // Login 用户登录
@@ -39,17 +42,12 @@ func (a Auth) Login(ctx *gin.Context) {
 		utils.Fail(ctx, "登录失败")
 		return
 	}
-	fmt.Println(req)
-
-	//session := sessions.Default(ctx)
-	//fmt.Println("session:", session)
-	//captcha := session.Get("captcha")
-	//fmt.Println("captcha:", captcha)
-	//if captcha == nil || captcha != req.Code {
-	//	fmt.Println("captcha:", captcha)
-	//	utils.Fail(ctx, "验证码错误")
-	//	return
-	//}
+	captcha, err := global.AquilaRedis.Get(context.Background(), "captcha-"+req.CaptchaKey).Result()
+	if captcha != req.Code {
+		utils.Fail(ctx, "验证码错误")
+		return
+	}
+	defer global.AquilaRedis.Del(context.Background(), "captcha-"+req.CaptchaKey)
 	var user model.UserEntity
 	err = global.AquilaDb.Where("username = ?", req.Username).First(&user).Error
 	if err != nil {
@@ -81,12 +79,12 @@ func (a Auth) Register(ctx *gin.Context) {
 		utils.Fail(ctx, "---step1---"+err.Error())
 		return
 	}
-	session := sessions.Default(ctx)
-	captcha := session.Get("captcha")
-	if captcha == nil || captcha != req.Code {
+	captcha, err := global.AquilaRedis.Get(context.Background(), req.CaptchaKey).Result()
+	if captcha != req.Code {
 		utils.Fail(ctx, "验证码错误")
 		return
 	}
+	defer global.AquilaRedis.Del(context.Background(), req.CaptchaKey)
 	var user model.UserEntity
 	// q: Find() 和 First() 的区别
 	// a: Find() 返回的是一个数组，First() 返回的是一个对象
@@ -118,12 +116,5 @@ func (a Auth) Register(ctx *gin.Context) {
 }
 
 func (a Auth) Logout(ctx *gin.Context) {
-	session := sessions.Default(ctx)
-	session.Clear()
-	err := session.Save()
-	if err != nil {
-		utils.Fail(ctx, "退出登录失败")
-		return
-	}
 	utils.Success(ctx, nil)
 }
