@@ -18,9 +18,7 @@ func main() {
 	// 初始化zap日志库
 	global.AquilaLog = initialize.InitZap()
 	zap.ReplaceGlobals(global.AquilaLog)
-
 	global.AquilaLog.Info("server run success on ", zap.String("zap_log", "zap_log"))
-
 	// 初始化数据库
 	global.AquilaDb = initialize.InitGorm()
 	initialize.InitServer()

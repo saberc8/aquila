@@ -4,6 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// q: *是什么意思
+// a:
 func InitLoginRouter(Router *gin.RouterGroup) {
 	resisterRouter := Router.Group("login")
 	{
