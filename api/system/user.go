@@ -136,19 +136,35 @@ func (u User) UpdateUserApi(ctx *gin.Context) {
 		utils.Fail(ctx, "参数绑定失败"+err.Error())
 		return
 	}
+
+	// 先检查用户是否存在
 	var user model.UserEntity
 	err = global.AquilaDb.Where("id = ?", req.Id).First(&user).Error
 	if err != nil {
 		utils.Fail(ctx, "用户不存在")
 		return
 	}
-	user.Username = req.Username
-	user.Nickname = req.Nickname
-	err = global.AquilaDb.Save(&user).Error
+
+	// 构建更新map，只包含非空字段
+	updates := make(map[string]interface{})
+	if req.Username != "" {
+		updates["username"] = req.Username
+	}
+	if req.Nickname != "" {
+		updates["nickname"] = req.Nickname
+	}
+	if req.Status != nil { // 需要先在 UserDto 中修改 Status 字段类型为 *int
+		updates["status"] = *req.Status
+	}
+
+	// 使用 Updates 只更新提供的字段
+	err = global.AquilaDb.Model(&user).Updates(updates).Error
 	if err != nil {
+		global.AquilaLog.Error("更新用户失败: " + err.Error())
 		utils.Fail(ctx, "更新失败")
 		return
 	}
+
 	utils.Success(ctx, nil)
 }
 
@@ -159,41 +175,44 @@ func (u User) BindRoleApi(ctx *gin.Context) {
 		utils.Fail(ctx, "参数绑定失败"+err.Error())
 		return
 	}
-	fmt.Println(req, req.UserId)
-	var userRoles []model.UserRoleEntity
-	var userRole model.UserRoleEntity
-	roleIds := req.RoleIds
-	roleIdArr := utils.StrSplit(roleIds)
+
+	// 开启事务
 	err = global.AquilaDb.Transaction(func(tx *gorm.DB) error {
-		err = tx.Unscoped().Where("user_id = ?", req.UserId).Delete(&userRole).Error
-		if err != nil {
+		// 1. 先删除所有现有关联
+		if err := tx.Exec("DELETE FROM user_role WHERE user_id = ?", req.UserId).Error; err != nil {
+			global.AquilaLog.Error("删除用户角色关联失败: " + err.Error())
 			return err
 		}
-		for _, v := range roleIdArr {
-			roleId, _ := strconv.Atoi(strconv.Itoa(v))
-			// 查询角色是否存在
-			var role model.RoleEntity
-			err = tx.Where("id = ?", roleId).First(&role).Error
-			if err == nil {
-				userRole = model.UserRoleEntity{
-					UserId: req.UserId,
-					RoleId: int64(roleId),
-				}
-				userRoles = append(userRoles, userRole)
-			}
+
+		// 2. 如果没有新的角色需要绑定，直接返回
+		if len(req.RoleIds) == 0 {
+			return nil
 		}
-		err = tx.Create(&userRoles).Error
-		if err != nil {
+
+		// 3. 准备新的关联记录
+		userRoles := make([]model.UserRoleEntity, 0, len(req.RoleIds))
+		for _, roleId := range req.RoleIds {
+			userRoles = append(userRoles, model.UserRoleEntity{
+				UserId: req.UserId,
+				RoleId: roleId,
+			})
+		}
+
+		// 4. 批量插入新的关联
+		if err := tx.Create(&userRoles).Error; err != nil {
+			global.AquilaLog.Error("创建用户角色关联失败: " + err.Error())
 			return err
 		}
 
 		return nil
-
 	})
+
 	if err != nil {
-		utils.Fail(ctx, "绑定失败"+err.Error())
+		global.AquilaLog.Error("绑定角色失败：" + err.Error())
+		utils.Fail(ctx, "绑定失败："+err.Error())
 		return
 	}
+
 	utils.Success(ctx, nil)
 }
 
@@ -311,9 +330,9 @@ func (u User) UnbindRoleApi(ctx *gin.Context) {
 		return
 	}
 
-	roleIds := utils.StrSplit(req.RoleIds)
+	// 直接使用 req.RoleIds，不需要转换
 	err := global.AquilaDb.Where("user_id = ? AND role_id IN (?)",
-		req.UserId, roleIds).Delete(&model.UserRoleEntity{}).Error
+		req.UserId, req.RoleIds).Delete(&model.UserRoleEntity{}).Error
 	if err != nil {
 		utils.Fail(ctx, "解绑角色失败")
 		return
@@ -323,14 +342,19 @@ func (u User) UnbindRoleApi(ctx *gin.Context) {
 
 // GetUserRolesApi 获取用户拥有的角色列表
 func (u User) GetUserRolesApi(ctx *gin.Context) {
-	userId := ctx.Query("userId")
-	var roles []model.RoleEntity
+	userId := ctx.Query("id") // 修改这里，从 "userId" 改为 "id"
+	if userId == "" {
+		utils.Fail(ctx, "用户ID不能为空")
+		return
+	}
 
+	var roles []model.RoleEntity
 	err := global.AquilaDb.Joins("JOIN user_role ON user_role.role_id = role.id").
 		Where("user_role.user_id = ?", userId).
 		Find(&roles).Error
 
 	if err != nil {
+		global.AquilaLog.Error("查询用户角色失败：" + err.Error())
 		utils.Fail(ctx, "查询失败")
 		return
 	}

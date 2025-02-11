@@ -91,7 +91,10 @@ func (r Role) GetRolePageApi(ctx *gin.Context) {
 	var total int64
 
 	global.AquilaDb.Model(&model.RoleEntity{}).Count(&total)
-	global.AquilaDb.Scopes(utils.Paginate(pageNumInt, pageSizeInt)).Find(&roles)
+	global.AquilaDb.Model(&model.RoleEntity{}).
+		Order("id ASC"). // 添加这一行，按id升序排序
+		Scopes(utils.Paginate(pageNumInt, pageSizeInt)).
+		Find(&roles)
 
 	req.Total = total
 	req.Data = roles

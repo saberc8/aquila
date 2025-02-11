@@ -7,6 +7,7 @@ type UserDto struct {
 	Username string `form:"username" json:"username"` // 账号
 	Password string `form:"password" json:"password"` // 密码
 	Nickname string `form:"nickname" json:"nickname"` // 昵称
+	Status   *int   `form:"status" json:"status"`     // 状态，使用指针类型以区分是否提供了该字段
 }
 
 type UserPageVo struct {
@@ -15,8 +16,8 @@ type UserPageVo struct {
 }
 
 type UserRoleDto struct {
-	UserId  int64  `form:"userId" json:"userId"`
-	RoleIds string `form:"roleIds" json:"roleIds"`
+	UserId  int64   `json:"userId"`
+	RoleIds []int64 `json:"roleIds"` // 修改为 []int64 类型
 }
 
 type GetUserMenuDto struct {
@@ -80,10 +81,10 @@ type ChangePasswordDto struct {
 
 // RoleMenuTreeReqDto 获取角色菜单树请求
 type RoleMenuTreeReqDto struct {
-    RoleId int64 `form:"roleId" json:"roleId"`
+	RoleId int64 `form:"roleId" json:"roleId"`
 }
 
 // RoleMenuTreeRespDto 角色菜单树响应
 type RoleMenuTreeRespDto struct {
-    MenuIds  []int64           `json:"menuIds"`   // 角色拥有的菜单ID
+	MenuIds []int64 `json:"menuIds"` // 角色拥有的菜单ID
 }
