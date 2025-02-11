@@ -59,17 +59,31 @@ type MenuDto struct {
 }
 
 type MenuPageDto struct {
-	Total int64       `form:"total" json:"total"`
-	Data  interface{} `form:"data" json:"data"`
+	PageNum  int         `form:"pageNum" json:"pageNum"`   // 页码
+	PageSize int         `form:"pageSize" json:"pageSize"` // 每页大小
+	Name     string      `form:"name" json:"name"`         // 菜单名称查询条件
+	Status   *int64      `form:"status" json:"status"`     // 状态查询条件
+	Total    int64       `form:"total" json:"total"`       // 总数
+	Data     interface{} `form:"data" json:"data"`         // 数据列表
 }
 
 type RoleMenuDto struct {
-	RoleId  int64  `form:"roleId" json:"roleId"`
-	MenuIds string `form:"menuIds" json:"menuIds"`
+	RoleId  int64   `form:"roleId" json:"roleId"`
+	MenuIds []int64 `form:"menuIds" json:"menuIds"` // 修改为 []int64 类型
 }
 
 type ChangePasswordDto struct {
 	UserId      int64  `form:"userId" json:"userId"`
 	OldPassword string `form:"oldPassword" json:"oldPassword"`
 	NewPassword string `form:"newPassword" json:"newPassword"`
+}
+
+// RoleMenuTreeReqDto 获取角色菜单树请求
+type RoleMenuTreeReqDto struct {
+    RoleId int64 `form:"roleId" json:"roleId"`
+}
+
+// RoleMenuTreeRespDto 角色菜单树响应
+type RoleMenuTreeRespDto struct {
+    MenuIds  []int64           `json:"menuIds"`   // 角色拥有的菜单ID
 }

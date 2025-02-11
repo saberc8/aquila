@@ -3,17 +3,24 @@ package router
 import (
 	"aquila/api/system"
 	"aquila/middleware"
+
 	"github.com/gin-gonic/gin"
 )
 
 func InitUserRouter(Router *gin.RouterGroup) {
-	resisterRouter := Router.Group("user", middleware.AuthMiddleWare())
+	userRouter := Router.Group("user", middleware.AuthMiddleWare())
 	user := system.User{}
-	resisterRouter.POST("", user.CreateUserApi)
-	resisterRouter.GET("", user.GetUserApi)
-	resisterRouter.POST("update", user.UpdateUserApi)
-	resisterRouter.GET("list", user.GetUserPageApi)
-	resisterRouter.POST("changePassword", user.ChangePasswordApi)
-	resisterRouter.POST("bindRole", user.BindRoleApi)
-	resisterRouter.GET("menus", user.GetUserMenuApi)
+	{
+		userRouter.POST("/create", user.CreateUserApi)
+		userRouter.GET("", user.GetUserApi)
+		userRouter.GET("/list", user.GetUserPageApi)
+		userRouter.POST("/update", user.UpdateUserApi)
+		userRouter.POST("/delete", user.DeleteUserApi)
+		userRouter.POST("/bindRole", user.BindRoleApi)
+		userRouter.POST("/unbindRole", user.UnbindRoleApi)
+		userRouter.POST("/changePassword", user.ChangePasswordApi)
+		userRouter.GET("/roles", user.GetUserRolesApi)
+		userRouter.GET("/menus", user.GetUserMenuApi)
+
+	}
 }

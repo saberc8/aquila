@@ -9,7 +9,7 @@ import (
 
 const AppMode = "debug"
 
-//const AppMode = "release"
+// const AppMode = "release"
 
 func main() {
 	gin.SetMode(AppMode)

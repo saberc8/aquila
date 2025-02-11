@@ -6,9 +6,10 @@ import (
 	"aquila/utils"
 	"crypto/md5"
 	"fmt"
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
-	"strconv"
 )
 
 type User struct {
@@ -284,4 +285,54 @@ func getMenuTree(parentId int64, menus []model.MenuEntity) []UserMenuTreeDto {
 		}
 	}
 	return menuTree
+}
+
+// DeleteUserApi 删除用户
+func (u User) DeleteUserApi(ctx *gin.Context) {
+	var req UserDto
+	if err := ctx.ShouldBind(&req); err != nil {
+		utils.Fail(ctx, "参数绑定失败"+err.Error())
+		return
+	}
+
+	err := global.AquilaDb.Delete(&model.UserEntity{}, req.Id).Error
+	if err != nil {
+		utils.Fail(ctx, "删除用户失败")
+		return
+	}
+	utils.Success(ctx, nil)
+}
+
+// UnbindRoleApi 为用户解绑角色
+func (u User) UnbindRoleApi(ctx *gin.Context) {
+	var req UserRoleDto
+	if err := ctx.ShouldBind(&req); err != nil {
+		utils.Fail(ctx, "参数绑定失败"+err.Error())
+		return
+	}
+
+	roleIds := utils.StrSplit(req.RoleIds)
+	err := global.AquilaDb.Where("user_id = ? AND role_id IN (?)",
+		req.UserId, roleIds).Delete(&model.UserRoleEntity{}).Error
+	if err != nil {
+		utils.Fail(ctx, "解绑角色失败")
+		return
+	}
+	utils.Success(ctx, nil)
+}
+
+// GetUserRolesApi 获取用户拥有的角色列表
+func (u User) GetUserRolesApi(ctx *gin.Context) {
+	userId := ctx.Query("userId")
+	var roles []model.RoleEntity
+
+	err := global.AquilaDb.Joins("JOIN user_role ON user_role.role_id = role.id").
+		Where("user_role.user_id = ?", userId).
+		Find(&roles).Error
+
+	if err != nil {
+		utils.Fail(ctx, "查询失败")
+		return
+	}
+	utils.Success(ctx, roles)
 }
