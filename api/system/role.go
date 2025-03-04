@@ -192,7 +192,7 @@ func (r Role) GetRoleMenusApi(ctx *gin.Context) {
 
 	var menus []model.MenuEntity
 	err := global.AquilaDb.Joins("JOIN role_menu ON role_menu.menu_id = menu.id").
-		Where("role_menu.role_id = ?", roleId).
+		Where("role_menu.role_id = ? AND role_menu.deleted_at IS NULL", roleId).
 		Find(&menus).Error
 
 	if err != nil {
