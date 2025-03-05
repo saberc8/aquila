@@ -6,6 +6,8 @@ main
 *.dll
 *.so
 *.dylib
+config.release.yaml
+config.yaml
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
@@ -37,3 +39,4 @@ log/
 
 # Go modules
 go.sum
+
